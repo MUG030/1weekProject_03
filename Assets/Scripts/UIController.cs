@@ -15,5 +15,12 @@ public class UIController : MonoBehaviour
 
         // UIDocumentの参照を保存
         _uiDocument = buttonObject.GetComponent<UIDocument>();
+
+        var buttonElement = _uiDocument.rootVisualElement.Q<Button>("Button01"); // 引数にVisualElementの名前を指定
+        buttonElement.clicked += () =>
+        {
+            var labelElement = _uiDocument.rootVisualElement.Q<Label>("Label01");
+            labelElement.text = "Clicked!";
+        };
     }
 }
