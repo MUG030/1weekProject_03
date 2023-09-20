@@ -1,35 +1,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StretchObject : MonoBehaviour
 {
     public Transform targetObject;
     public float stretchSpeed = 1.0f;
-    [SerializeField] string _stretchButton = "StretchButton"; // ボタンの名前
 
-    private bool stretching = false;
+    private bool _stretching = false;
+    private Vector3 _originalScale;
 
-    void Update()
+    private void Start()
     {
-        // ボタンが押されている間にストレッチを開始
-        if (Input.GetButtonDown(_stretchButton))
-        {
-            stretching = true;
-        }
+        // 初期のスケールを保存
+        _originalScale = targetObject.localScale;
+    }
 
-        // ボタンが離されたらストップ
-        if (Input.GetButtonUp(_stretchButton))
-        {
-            stretching = false;
-        }
-
+    private void Update()
+    {
         // ボタンが押されている間に伸ばす処理
-        if (stretching)
+        if (_stretching)
         {
             Vector3 scale = targetObject.localScale;
             scale.y += stretchSpeed * Time.deltaTime;
             targetObject.localScale = scale;
         }
+        else
+        {
+            // ボタンが離されたときに元の大きさに戻す処理
+            Vector3 currentScale = targetObject.localScale;
+            currentScale.y = Mathf.MoveTowards(currentScale.y, _originalScale.y, stretchSpeed * Time.deltaTime);
+            targetObject.localScale = currentScale;
+        }
+    }
+
+    public void StartStretching()
+    {
+        // ボタンが押されたときに伸ばす処理を開始
+        _stretching = true;
+    }
+
+    public void StopStretching()
+    {
+        // ボタンが離されたときに伸ばす処理を停止
+        _stretching = false;
     }
 }
